@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:thinknotestudioapp/app/splash/splash_screen.dart';
+// eecf7684-405e-4084-a039-079a0e021c22
+void main() async {
+  runApp(MyApp());
 
-void main() {
-  runApp(const MyApp());
+  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+  OneSignal.initialize("eecf7684-405e-4084-a039-079a0e021c22");
+  OneSignal.Notifications.requestPermission(true);
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +21,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
       
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
       ),
       home: const MyHomePage(title: 'ThinkNote Studio'),
     );
