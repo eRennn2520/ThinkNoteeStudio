@@ -1,4 +1,4 @@
-package com.example.thinknotestudioapp
+package com.thinknotestudioapp
 
 import io.flutter.embedding.android.FlutterActivity
 

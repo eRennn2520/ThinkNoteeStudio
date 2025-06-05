@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:slider_button/slider_button.dart';
+
 import 'package:table_calendar/table_calendar.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -49,7 +49,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 23),
                 child: Container(
-                  height: 77,
+                  height: screenHeight * 0.09,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(36),
                     color: Colors.white.withOpacity(0.3),
@@ -88,14 +88,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 ),
               ),
 
-              const SizedBox(height: 30),
+                 SizedBox(height: screenHeight * 0.03),
 
-              const Padding(
+               Padding(
                 padding: EdgeInsets.only(left: 30),
                 child: Text(
                   "Choose\nthe date",
                   style: TextStyle(
-                    fontSize: 36,
+                    fontSize: screenWidth * 0.09,
                     fontWeight: FontWeight.w400,
                     color: Colors.white,
                     height: 1.4,
@@ -104,7 +104,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 ),
               ),
 
-              const SizedBox(height: 20),
+               SizedBox(height: screenHeight * 0.02),
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -167,7 +167,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       builder: (context) => CalendarClockScreen(),
                     ),
                   );
-                },
+                }, text: 'Swipe to add time',
               ),
             ],
           ),

@@ -5,8 +5,9 @@ import 'package:shimmer/shimmer.dart';
 
 class RotatingSliderButton extends StatefulWidget {
   final VoidCallback onSlideCompleted;
+  String text;
 
-  const RotatingSliderButton({super.key, required this.onSlideCompleted});
+   RotatingSliderButton({super.key, required this.onSlideCompleted,required this.text});
 
   @override
   State<RotatingSliderButton> createState() => _RotatingSliderButtonState();
@@ -44,8 +45,8 @@ class _RotatingSliderButtonState extends State<RotatingSliderButton>
                 baseColor: Colors.white,
                 highlightColor: Colors.grey,
                 period: const Duration(seconds: 2),
-                child: const Text(
-                  "Swipe to add time",
+                child:  Text(
+                  widget.text,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
@@ -90,7 +91,7 @@ class _RotatingSliderButtonState extends State<RotatingSliderButton>
                 angle: rotationAngle,
                 child: CircleAvatar(
                   radius: 30,
-                  backgroundColor: Colors.brown.shade200,
+                  backgroundColor: Color(0xFFCEB7FF),
                   child: const Icon(
                     Icons.arrow_forward_ios,
                     color: Colors.white,
