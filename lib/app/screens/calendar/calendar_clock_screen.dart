@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:provider/provider.dart';
 import 'package:thinknotestudioapp/app/screens/calendar/new_task_screen.dart';
 import 'package:thinknotestudioapp/app/widgets/slider_button.dart';
+import 'package:thinknotestudioapp/provider.dart';
 
 class CalendarClockScreen extends StatefulWidget {
   const CalendarClockScreen({super.key});
@@ -16,7 +18,7 @@ class _CalendarClockScreenState extends State<CalendarClockScreen> {
   int _selectedHour = 6;
   int _selectedMinute = 28;
   int _selectedSecond = 55;
-  String _selectedPeriod = 'PM';
+  String _selectedPeriod = 'ÖS';
 
   @override
   void initState() {
@@ -91,7 +93,7 @@ class _CalendarClockScreenState extends State<CalendarClockScreen> {
               Padding(
                 padding: EdgeInsets.only(left: horizontalPadding),
                 child: Text(
-                  "Choose\nthe time",
+                  "Görevin\nSaati",
                   style: TextStyle(
                     fontSize: screenWidth * 0.09,
                     fontWeight: FontWeight.w400,
@@ -147,12 +149,25 @@ class _CalendarClockScreenState extends State<CalendarClockScreen> {
 
               RotatingSliderButton(
                 onSlideCompleted: () {
-                  Navigator.push(
+                  final taskProvider = context.read<TaskProvider>();
+
+                  final time =
+                      "${_selectedHour.toString().padLeft(2, '0')}:"
+                      "${_selectedMinute.toString().padLeft(2, '0')} "
+                      "$_selectedPeriod";
+
+                  // Saat Provider'a yazılıyor
+                  taskProvider.setTime(time);
+
+                  // NET geçiş (stack sorunu yok)
+                  Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => NewTaskScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => const NewTaskScreen(),
+                    ),
                   );
                 },
-                text: 'Swipe to proceed',
+                text: 'Devam',
               ),
             ],
           ),
@@ -210,17 +225,20 @@ class _CalendarClockScreenState extends State<CalendarClockScreen> {
       width: 60,
       height: 100,
       child: ListWheelScrollView.useDelegate(
+        controller: FixedExtentScrollController(
+          initialItem: _selectedPeriod == 'ÖÖ' ? 0 : 1,
+        ),
         itemExtent: 40,
         perspective: 0.005,
         diameterRatio: 1.5,
         physics: const FixedExtentScrollPhysics(),
         onSelectedItemChanged: (index) {
           setState(() {
-            _selectedPeriod = index == 0 ? 'AM' : 'PM';
+            _selectedPeriod = index == 0 ? 'ÖÖ' : 'ÖS';
           });
         },
         childDelegate: ListWheelChildListDelegate(
-          children: ['AM', 'PM'].map((period) {
+          children: ['ÖÖ', 'ÖS'].map((period) {
             return Center(
               child: Text(
                 period,

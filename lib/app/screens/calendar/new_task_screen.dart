@@ -2,6 +2,8 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:thinknotestudioapp/app/widgets/bottom_nav_bar.dart';
 import 'package:thinknotestudioapp/app/widgets/slider_button.dart';
+import 'package:provider/provider.dart';
+import 'package:thinknotestudioapp/provider.dart';
 
 class NewTaskScreen extends StatefulWidget {
   const NewTaskScreen({super.key});
@@ -12,6 +14,8 @@ class NewTaskScreen extends StatefulWidget {
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
   bool _reminderEnabled = false; // State for the switch
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +97,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: 30),
                 child: Text(
-                  "Add new\ntask",
+                  "Görev\nDetayları",
                   style: TextStyle(
                     fontSize: screenWidth * 0.09,
                     fontWeight: FontWeight.w400,
@@ -108,8 +112,9 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: TextField(
+                  controller: _titleController,
                   decoration: InputDecoration(
-                    hintText: "Task Title",
+                    hintText: "Başlık",
                     hintStyle: TextStyle(
                       color: Colors.white.withOpacity(0.7),
                       fontSize: 16,
@@ -129,8 +134,9 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: TextField(
+                  controller: _descController,
                   decoration: InputDecoration(
-                    hintText: "Task Description",
+                    hintText: "Açıklama",
                     hintStyle: TextStyle(
                       color: Colors.white.withOpacity(0.7),
                       fontSize: 16,
@@ -147,37 +153,24 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                 ),
               ),
               SizedBox(height: screenHeight * 0.02),
-              // Enable Reminder Switch
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Enable reminder",
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                    Switch(
-                      value: _reminderEnabled,
-                      onChanged: (value) =>
-                          setState(() => _reminderEnabled = value),
-                      activeColor: Colors.white,
-                      inactiveThumbColor: Colors.white,
-                      inactiveTrackColor: Colors.grey,
-                    ),
-                  ],
-                ),
-              ),
+
               Spacer(),
               RotatingSliderButton(
                 onSlideCompleted: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => RollingNavBar()),
-                    (Route<dynamic> route) => false,
+                  final taskProvider = context.read<TaskProvider>();
+
+                  taskProvider.addTask(
+                    title: _titleController.text,
+                    description: _descController.text,
+                    date: taskProvider.selectedDate,
+                    time: taskProvider.selectedTime,
+                  );
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => RollingNavBar()),
+                    (route) => false, // tüm route'ları temizler
                   );
                 },
-                text: 'Swipe to proceed',
+                text: 'Oluştur',
               ),
             ],
           ),

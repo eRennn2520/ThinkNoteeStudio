@@ -3,8 +3,8 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:thinknotestudioapp/app/screens/calendar/calendar_screen.dart';
-import 'package:thinknotestudioapp/app/screens/home/all_screen.dart';
-import 'package:thinknotestudioapp/app/screens/home/in_progress_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:thinknotestudioapp/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,6 +30,13 @@ class _HomeScreenState extends State<HomeScreen>
       return "İyi geceler 🌌";
     }
   }
+
+  final List<List<Color>> taskGradients = [
+    [Color(0xFF7F7FD5), Color(0xFF86A8E7), Color(0xFF91EAE4)],
+    [Color(0xFFFF9966), Color(0xFFFF5E62)],
+    [Color(0xFF56ab2f), Color(0xFFA8E063)],
+    [Color(0xFF614385), Color(0xFF516395)],
+  ];
 
   @override
   void initState() {
@@ -232,13 +239,109 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                 ),
 
-                // TabBarView remains unchanged
                 Expanded(
                   child: TabBarView(
                     controller: _tabController,
                     children: [
-                      AllScreen(), // Yapılacaklar
-                      Center(child: Text("Geçmiş")), // Geçmiş
+                      // GÖREVLER (Provider + Hive)
+                      Consumer<TaskProvider>(
+                        builder: (context, taskProvider, _) {
+                          final tasks = taskProvider.tasks;
+
+                          if (tasks.isEmpty) {
+                            return const Center(
+                              child: Text(
+                                "Henüz görev yok",
+                                style: TextStyle(color: Colors.black54),
+                              ),
+                            );
+                          }
+
+                          return ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            itemCount: tasks.length,
+                            itemBuilder: (context, index) {
+                              final task = tasks[index];
+
+                              final gradient = taskGradients[index % taskGradients.length];
+
+                              return Container(
+                                margin: const EdgeInsets.only(bottom: 14),
+                                padding: const EdgeInsets.all(18),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  gradient: LinearGradient(
+                                    colors: gradient,
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: gradient.last.withOpacity(0.35),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      task.title,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    if (task.description.isNotEmpty) ...[
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        task.description,
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.white70,
+                                        ),
+                                      ),
+                                    ],
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.calendar_today,
+                                            size: 14, color: Colors.white70),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          task.date != null
+                                              ? "${task.date!.day}.${task.date!.month}.${task.date!.year}"
+                                              : "Tarihsiz",
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.white70,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Icon(Icons.access_time,
+                                            size: 14, color: Colors.white70),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          task.time,
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.white70,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+
+                      // GEÇMİŞ (şimdilik boş)
+                      const Center(child: Text("Geçmiş")),
                     ],
                   ),
                 ),

@@ -5,6 +5,8 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:thinknotestudioapp/app/screens/calendar/calendar_clock_screen.dart';
 import 'package:thinknotestudioapp/app/widgets/slider_button.dart';
+import 'package:provider/provider.dart';
+import 'package:thinknotestudioapp/provider.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -93,7 +95,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                Padding(
                 padding: EdgeInsets.only(left: 30),
                 child: Text(
-                  "Choose\nthe date",
+                  "Görevin tarihi\n",
                   style: TextStyle(
                     fontSize: screenWidth * 0.09,
                     fontWeight: FontWeight.w400,
@@ -104,7 +106,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 ),
               ),
 
-               SizedBox(height: screenHeight * 0.02),
+               SizedBox(height: screenHeight * 0.01),
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -119,6 +121,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       _selectedDay = selectedDay;
                       _focusedDay = focusedDay;
                     });
+
+                    context.read<TaskProvider>().setDate(selectedDay);
                   },
                   calendarStyle: const CalendarStyle(
                     todayDecoration: BoxDecoration(
@@ -167,7 +171,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       builder: (context) => CalendarClockScreen(),
                     ),
                   );
-                }, text: 'Swipe to add time',
+                }, text: 'Devam',
               ),
             ],
           ),
