@@ -15,6 +15,25 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
+  // Helper: returns true if the task's date+time is before now.
+  bool isTaskPast(task) {
+    final now = DateTime.now();
+
+    final timeParts = task.time.split(":");
+    final hour = int.tryParse(timeParts[0]) ?? 0;
+    final minute = int.tryParse(timeParts.length > 1 ? timeParts[1] : "0") ?? 0;
+
+    final taskDateTime = DateTime(
+      task.date.year,
+      task.date.month,
+      task.date.day,
+      hour,
+      minute,
+    );
+
+    return taskDateTime.isBefore(now);
+  }
+
   late TabController _tabController;
 
   String getGreeting() {
@@ -246,7 +265,9 @@ class _HomeScreenState extends State<HomeScreen>
                       // GÖREVLER (Provider + Hive)
                       Consumer<TaskProvider>(
                         builder: (context, taskProvider, _) {
-                          final tasks = taskProvider.tasks;
+                          final tasks = taskProvider.tasks
+                              .where((t) => !isTaskPast(t))
+                              .toList();
 
                           if (tasks.isEmpty) {
                             return const Center(
@@ -258,12 +279,16 @@ class _HomeScreenState extends State<HomeScreen>
                           }
 
                           return ListView.builder(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 10,
+                            ),
                             itemCount: tasks.length,
                             itemBuilder: (context, index) {
                               final task = tasks[index];
 
-                              final gradient = taskGradients[index % taskGradients.length];
+                              final gradient =
+                                  taskGradients[index % taskGradients.length];
 
                               return Container(
                                 margin: const EdgeInsets.only(bottom: 14),
@@ -307,8 +332,11 @@ class _HomeScreenState extends State<HomeScreen>
                                     const SizedBox(height: 8),
                                     Row(
                                       children: [
-                                        Icon(Icons.calendar_today,
-                                            size: 14, color: Colors.white70),
+                                        Icon(
+                                          Icons.calendar_today,
+                                          size: 14,
+                                          color: Colors.white70,
+                                        ),
                                         const SizedBox(width: 6),
                                         Text(
                                           task.date != null
@@ -320,8 +348,11 @@ class _HomeScreenState extends State<HomeScreen>
                                           ),
                                         ),
                                         const SizedBox(width: 12),
-                                        Icon(Icons.access_time,
-                                            size: 14, color: Colors.white70),
+                                        Icon(
+                                          Icons.access_time,
+                                          size: 14,
+                                          color: Colors.white70,
+                                        ),
                                         const SizedBox(width: 6),
                                         Text(
                                           task.time,
@@ -340,8 +371,140 @@ class _HomeScreenState extends State<HomeScreen>
                         },
                       ),
 
-                      // GEÇMİŞ (şimdilik boş)
-                      const Center(child: Text("Geçmiş")),
+                      // GEÇMİŞ (expired tasks)
+                      Consumer<TaskProvider>(
+                        builder: (context, taskProvider, _) {
+                          final pastTasks = taskProvider.tasks
+                              .where((t) => isTaskPast(t))
+                              .toList();
+
+                          if (pastTasks.isEmpty) {
+                            return const Center(
+                              child: Text(
+                                "Geçmiş görev yok",
+                                style: TextStyle(color: Colors.black54),
+                              ),
+                            );
+                          }
+
+                          return ListView.builder(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 10,
+                            ),
+                            itemCount: pastTasks.length,
+                            itemBuilder: (context, index) {
+                              final task = pastTasks[index];
+                              final gradient =
+                                  taskGradients[index % taskGradients.length];
+
+                              return Stack(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(bottom: 14),
+                                    padding: const EdgeInsets.all(18),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      gradient: LinearGradient(
+                                        colors: gradient,
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: gradient.last.withOpacity(
+                                            0.35,
+                                          ),
+                                          blurRadius: 12,
+                                          offset: const Offset(0, 6),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          task.title,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        if (task.description.isNotEmpty) ...[
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            task.description,
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              color: Colors.white70,
+                                            ),
+                                          ),
+                                        ],
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.calendar_today,
+                                              size: 14,
+                                              color: Colors.white70,
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              "${task.date.day}.${task.date.month}.${task.date.year}",
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.white70,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 12),
+                                            const Icon(
+                                              Icons.access_time,
+                                              size: 14,
+                                              color: Colors.white70,
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              task.time,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.white70,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 17,
+                                    right: 8,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: const Text(
+                                        "Zamanı geçti",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
