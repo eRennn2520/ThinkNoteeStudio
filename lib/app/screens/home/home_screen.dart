@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lottie/lottie.dart';
 import 'package:thinknotestudioapp/app/screens/calendar/calendar_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:thinknotestudioapp/provider.dart';
@@ -166,7 +167,9 @@ class _HomeScreenState extends State<HomeScreen>
                                   backgroundColor: Colors.white,
                                   radius: 30,
                                   child: Icon(
-                                    _isSearching ? EvaIcons.close : EvaIcons.search,
+                                    _isSearching
+                                        ? EvaIcons.close
+                                        : EvaIcons.search,
                                     color: Colors.black,
                                   ),
                                 ),
@@ -206,7 +209,10 @@ class _HomeScreenState extends State<HomeScreen>
                 // Search TextField (minimal)
                 if (_isSearching)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 4,
+                    ),
                     child: Container(
                       height: 36,
                       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -224,7 +230,11 @@ class _HomeScreenState extends State<HomeScreen>
                         },
                         style: const TextStyle(fontSize: 13),
                         decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.search, size: 16, color: Colors.black45),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            size: 16,
+                            color: Colors.black45,
+                          ),
                           prefixIconConstraints: BoxConstraints(
                             minWidth: 32,
                             minHeight: 50,
@@ -316,16 +326,30 @@ class _HomeScreenState extends State<HomeScreen>
                         builder: (context, taskProvider, _) {
                           final tasks = taskProvider.tasks
                               .where((t) => !isTaskPast(t))
-                              .where((t) =>
-                                  _searchQuery.isEmpty ||
-                                  t.title.toLowerCase().contains(_searchQuery))
+                              .where(
+                                (t) =>
+                                    _searchQuery.isEmpty ||
+                                    t.title.toLowerCase().contains(
+                                      _searchQuery,
+                                    ),
+                              )
                               .toList();
 
                           if (tasks.isEmpty) {
-                            return const Center(
-                              child: Text(
-                                "Henüz görev yok",
-                                style: TextStyle(color: Colors.black54),
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: screenHeight * 0.06),
+                                  Lottie.asset(
+                                    "assets/Cute bear dancing.json",
+                                    width: screenWidth * 0.6,
+                                  ),
+                                  Text(
+                                    "Henüz görev yok",
+                                    style: TextStyle(color: Colors.black54),
+                                  ),
+                                ],
                               ),
                             );
                           }
@@ -351,59 +375,104 @@ class _HomeScreenState extends State<HomeScreen>
                                         builder: (context) {
                                           return AlertDialog(
                                             backgroundColor: Colors.transparent,
-                                            insetPadding: const EdgeInsets.all(20),
+                                            insetPadding: const EdgeInsets.all(
+                                              20,
+                                            ),
                                             content: Stack(
                                               children: [
                                                 Container(
-                                                  padding: const EdgeInsets.all(20),
+                                                  padding: const EdgeInsets.all(
+                                                    20,
+                                                  ),
                                                   decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(20),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          20,
+                                                        ),
                                                     gradient: LinearGradient(
                                                       colors: gradient,
                                                       begin: Alignment.topLeft,
-                                                      end: Alignment.bottomRight,
+                                                      end:
+                                                          Alignment.bottomRight,
                                                     ),
                                                   ),
                                                   child: SingleChildScrollView(
                                                     child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
                                                         Text(
                                                           task.title,
-                                                          style: const TextStyle(
-                                                            fontSize: 20,
-                                                            fontWeight: FontWeight.bold,
-                                                            color: Colors.white,
-                                                          ),
+                                                          style:
+                                                              const TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
                                                         ),
-                                                        const SizedBox(height: 12),
-                                                        if (task.description.isNotEmpty)
+                                                        const SizedBox(
+                                                          height: 12,
+                                                        ),
+                                                        if (task
+                                                            .description
+                                                            .isNotEmpty)
                                                           Text(
                                                             task.description,
-                                                            style: const TextStyle(
-                                                              fontSize: 15,
-                                                              color: Colors.white70,
-                                                            ),
+                                                            style:
+                                                                const TextStyle(
+                                                                  fontSize: 15,
+                                                                  color: Colors
+                                                                      .white70,
+                                                                ),
                                                           ),
-                                                        const SizedBox(height: 20),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
                                                         Row(
                                                           children: [
-                                                            const Icon(Icons.calendar_today,
-                                                                color: Colors.white70, size: 16),
-                                                            const SizedBox(width: 8),
+                                                            const Icon(
+                                                              Icons
+                                                                  .calendar_today,
+                                                              color: Colors
+                                                                  .white70,
+                                                              size: 16,
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 8,
+                                                            ),
                                                             Text(
                                                               task.date != null
                                                                   ? "${task.date!.day}.${task.date!.month}.${task.date!.year}"
                                                                   : "Tarihsiz",
-                                                              style: const TextStyle(color: Colors.white70),
+                                                              style:
+                                                                  const TextStyle(
+                                                                    color: Colors
+                                                                        .white70,
+                                                                  ),
                                                             ),
-                                                            const SizedBox(width: 16),
-                                                            const Icon(Icons.access_time,
-                                                                color: Colors.white70, size: 16),
-                                                            const SizedBox(width: 6),
+                                                            const SizedBox(
+                                                              width: 16,
+                                                            ),
+                                                            const Icon(
+                                                              Icons.access_time,
+                                                              color: Colors
+                                                                  .white70,
+                                                              size: 16,
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 6,
+                                                            ),
                                                             Text(
                                                               task.time,
-                                                              style: const TextStyle(color: Colors.white70),
+                                                              style:
+                                                                  const TextStyle(
+                                                                    color: Colors
+                                                                        .white70,
+                                                                  ),
                                                             ),
                                                           ],
                                                         ),
@@ -415,11 +484,17 @@ class _HomeScreenState extends State<HomeScreen>
                                                   top: 0,
                                                   right: 0,
                                                   child: GestureDetector(
-                                                    onTap: () => Navigator.of(context).pop(),
+                                                    onTap: () => Navigator.of(
+                                                      context,
+                                                    ).pop(),
                                                     child: Container(
-                                                      padding: const EdgeInsets.all(6),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                            6,
+                                                          ),
                                                       decoration: BoxDecoration(
-                                                        color: Colors.black.withOpacity(0.25),
+                                                        color: Colors.black
+                                                            .withOpacity(0.25),
                                                         shape: BoxShape.circle,
                                                       ),
                                                       child: const Icon(
@@ -448,14 +523,17 @@ class _HomeScreenState extends State<HomeScreen>
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: gradient.last.withOpacity(0.35),
+                                            color: gradient.last.withOpacity(
+                                              0.35,
+                                            ),
                                             blurRadius: 12,
                                             offset: const Offset(0, 6),
                                           ),
                                         ],
                                       ),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             task.title,
@@ -522,17 +600,25 @@ class _HomeScreenState extends State<HomeScreen>
                                     right: 8,
                                     child: GestureDetector(
                                       onTap: () {
-                                        final provider = context.read<TaskProvider>();
-                                        final index = provider.tasks.indexOf(task);
+                                        final provider = context
+                                            .read<TaskProvider>();
+                                        final index = provider.tasks.indexOf(
+                                          task,
+                                        );
                                         if (index != -1) {
                                           provider.completeTask(index);
                                         }
                                       },
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 6,
+                                        ),
                                         decoration: BoxDecoration(
                                           color: Colors.white.withOpacity(0.5),
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                         ),
                                         child: const Text(
                                           "Tamamlandı",
@@ -550,17 +636,24 @@ class _HomeScreenState extends State<HomeScreen>
                                     right: 8,
                                     child: GestureDetector(
                                       onTap: () {
-                                        final provider = context.read<TaskProvider>();
-                                        final providerIndex = provider.tasks.indexOf(task);
+                                        final provider = context
+                                            .read<TaskProvider>();
+                                        final providerIndex = provider.tasks
+                                            .indexOf(task);
                                         if (providerIndex != -1) {
                                           provider.deleteTask(providerIndex);
                                         }
                                       },
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 6,
+                                        ),
                                         decoration: BoxDecoration(
                                           color: Colors.white.withOpacity(0.4),
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                         ),
                                         child: const Text(
                                           "Görevi sil",
@@ -585,16 +678,30 @@ class _HomeScreenState extends State<HomeScreen>
                         builder: (context, taskProvider, _) {
                           final pastTasks = taskProvider.tasks
                               .where((t) => isTaskPast(t))
-                              .where((t) =>
-                                  _searchQuery.isEmpty ||
-                                  t.title.toLowerCase().contains(_searchQuery))
+                              .where(
+                                (t) =>
+                                    _searchQuery.isEmpty ||
+                                    t.title.toLowerCase().contains(
+                                      _searchQuery,
+                                    ),
+                              )
                               .toList();
 
                           if (pastTasks.isEmpty) {
-                            return const Center(
-                              child: Text(
-                                "Geçmiş görev yok",
-                                style: TextStyle(color: Colors.black54),
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: screenHeight * 0.06),
+                                  Lottie.asset(
+                                    "assets/Cute bear dancing.json",
+                                    width: screenWidth * 0.6,
+                                  ),
+                                  Text(
+                                    "Henüz görev yok",
+                                    style: TextStyle(color: Colors.black54),
+                                  ),
+                                ],
                               ),
                             );
                           }
@@ -619,57 +726,102 @@ class _HomeScreenState extends State<HomeScreen>
                                         builder: (context) {
                                           return AlertDialog(
                                             backgroundColor: Colors.transparent,
-                                            insetPadding: const EdgeInsets.all(20),
+                                            insetPadding: const EdgeInsets.all(
+                                              20,
+                                            ),
                                             content: Stack(
                                               children: [
                                                 Container(
-                                                  padding: const EdgeInsets.all(20),
+                                                  padding: const EdgeInsets.all(
+                                                    20,
+                                                  ),
                                                   decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(20),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          20,
+                                                        ),
                                                     gradient: LinearGradient(
                                                       colors: gradient,
                                                       begin: Alignment.topLeft,
-                                                      end: Alignment.bottomRight,
+                                                      end:
+                                                          Alignment.bottomRight,
                                                     ),
                                                   ),
                                                   child: SingleChildScrollView(
                                                     child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
                                                         Text(
                                                           task.title,
-                                                          style: const TextStyle(
-                                                            fontSize: 20,
-                                                            fontWeight: FontWeight.bold,
-                                                            color: Colors.white,
-                                                          ),
+                                                          style:
+                                                              const TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
                                                         ),
-                                                        const SizedBox(height: 12),
-                                                        if (task.description.isNotEmpty)
+                                                        const SizedBox(
+                                                          height: 12,
+                                                        ),
+                                                        if (task
+                                                            .description
+                                                            .isNotEmpty)
                                                           Text(
                                                             task.description,
-                                                            style: const TextStyle(
-                                                              fontSize: 15,
-                                                              color: Colors.white70,
-                                                            ),
+                                                            style:
+                                                                const TextStyle(
+                                                                  fontSize: 15,
+                                                                  color: Colors
+                                                                      .white70,
+                                                                ),
                                                           ),
-                                                        const SizedBox(height: 20),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
                                                         Row(
                                                           children: [
-                                                            const Icon(Icons.calendar_today,
-                                                                color: Colors.white70, size: 16),
-                                                            const SizedBox(width: 8),
+                                                            const Icon(
+                                                              Icons
+                                                                  .calendar_today,
+                                                              color: Colors
+                                                                  .white70,
+                                                              size: 16,
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 8,
+                                                            ),
                                                             Text(
                                                               "${task.date.day}.${task.date.month}.${task.date.year}",
-                                                              style: const TextStyle(color: Colors.white70),
+                                                              style:
+                                                                  const TextStyle(
+                                                                    color: Colors
+                                                                        .white70,
+                                                                  ),
                                                             ),
-                                                            const SizedBox(width: 16),
-                                                            const Icon(Icons.access_time,
-                                                                color: Colors.white70, size: 16),
-                                                            const SizedBox(width: 6),
+                                                            const SizedBox(
+                                                              width: 16,
+                                                            ),
+                                                            const Icon(
+                                                              Icons.access_time,
+                                                              color: Colors
+                                                                  .white70,
+                                                              size: 16,
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 6,
+                                                            ),
                                                             Text(
                                                               task.time,
-                                                              style: const TextStyle(color: Colors.white70),
+                                                              style:
+                                                                  const TextStyle(
+                                                                    color: Colors
+                                                                        .white70,
+                                                                  ),
                                                             ),
                                                           ],
                                                         ),
@@ -681,11 +833,17 @@ class _HomeScreenState extends State<HomeScreen>
                                                   top: 0,
                                                   right: 0,
                                                   child: GestureDetector(
-                                                    onTap: () => Navigator.of(context).pop(),
+                                                    onTap: () => Navigator.of(
+                                                      context,
+                                                    ).pop(),
                                                     child: Container(
-                                                      padding: const EdgeInsets.all(6),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                            6,
+                                                          ),
                                                       decoration: BoxDecoration(
-                                                        color: Colors.black.withOpacity(0.25),
+                                                        color: Colors.black
+                                                            .withOpacity(0.25),
                                                         shape: BoxShape.circle,
                                                       ),
                                                       child: const Icon(
@@ -797,7 +955,9 @@ class _HomeScreenState extends State<HomeScreen>
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
-                                        task.isCompleted ? "Tamamlandı" : "Zamanı geçti",
+                                        task.isCompleted
+                                            ? "Tamamlandı"
+                                            : "Zamanı geçti",
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 11,
@@ -811,17 +971,24 @@ class _HomeScreenState extends State<HomeScreen>
                                     right: 8,
                                     child: GestureDetector(
                                       onTap: () {
-                                        final provider = context.read<TaskProvider>();
-                                        final providerIndex = provider.tasks.indexOf(task);
+                                        final provider = context
+                                            .read<TaskProvider>();
+                                        final providerIndex = provider.tasks
+                                            .indexOf(task);
                                         if (providerIndex != -1) {
                                           provider.deleteTask(providerIndex);
                                         }
                                       },
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 6,
+                                        ),
                                         decoration: BoxDecoration(
                                           color: Colors.white.withOpacity(0.4),
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                         ),
                                         child: const Text(
                                           "Görevi sil",
