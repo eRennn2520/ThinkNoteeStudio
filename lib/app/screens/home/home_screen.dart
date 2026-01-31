@@ -248,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                     ),
                   ),
-
+                SizedBox(height: screenHeight * 0.01),
                 // Başlık metni
                 Padding(
                   padding: const EdgeInsets.only(left: 30.0),
