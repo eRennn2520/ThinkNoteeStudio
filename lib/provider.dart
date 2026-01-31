@@ -17,13 +17,16 @@ class TaskModel {
   @HiveField(3)
   String time; // HH:mm
 
+  @HiveField(4)
+  bool isCompleted;
+
   TaskModel({
     required this.title,
     required this.description,
     required this.date,
     required this.time,
+    this.isCompleted = false,
   });
-
 }
 
 /// Manual Hive adapter (no build_runner needed)
@@ -37,19 +40,19 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-
     return TaskModel(
       title: (fields[0] ?? '') as String,
       description: (fields[1] ?? '') as String,
       date: (fields[2] ?? DateTime.now()) as DateTime,
       time: (fields[3] ?? '00:00') as String,
+      isCompleted: (fields[4] ?? false) as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, TaskModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -57,7 +60,9 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
       ..writeByte(2)
       ..write(obj.date)
       ..writeByte(3)
-      ..write(obj.time);
+      ..write(obj.time)
+      ..writeByte(4)
+      ..write(obj.isCompleted);
   }
 }
 
@@ -120,6 +125,14 @@ class TaskProvider extends ChangeNotifier {
   void deleteTask(int index) {
     _taskBox.deleteAt(index);
     _tasks.removeAt(index);
+    notifyListeners();
+  }
+
+  void completeTask(int index) {
+    final task = _tasks[index];
+    task.isCompleted = true;
+    _taskBox.putAt(index, task);
+    _tasks[index] = task;
     notifyListeners();
   }
 

@@ -17,8 +17,9 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   // Helper: returns true if the task's date+time is before now.
   bool isTaskPast(task) {
-    final now = DateTime.now();
+    if (task.isCompleted) return true;
 
+    final now = DateTime.now();
     final timeParts = task.time.split(":");
     final hour = int.tryParse(timeParts[0]) ?? 0;
     final minute = int.tryParse(timeParts.length > 1 ? timeParts[1] : "0") ?? 0;
@@ -290,81 +291,145 @@ class _HomeScreenState extends State<HomeScreen>
                               final gradient =
                                   taskGradients[index % taskGradients.length];
 
-                              return Container(
-                                margin: const EdgeInsets.only(bottom: 14),
-                                padding: const EdgeInsets.all(18),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  gradient: LinearGradient(
-                                    colors: gradient,
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: gradient.last.withOpacity(0.35),
-                                      blurRadius: 12,
-                                      offset: const Offset(0, 6),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      task.title,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
+                              return Stack(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(bottom: 14),
+                                    padding: const EdgeInsets.all(18),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      gradient: LinearGradient(
+                                        colors: gradient,
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
                                       ),
-                                    ),
-                                    if (task.description.isNotEmpty) ...[
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        task.description,
-                                        style: const TextStyle(
-                                          fontSize: 13,
-                                          color: Colors.white70,
-                                        ),
-                                      ),
-                                    ],
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.calendar_today,
-                                          size: 14,
-                                          color: Colors.white70,
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          task.date != null
-                                              ? "${task.date!.day}.${task.date!.month}.${task.date!.year}"
-                                              : "Tarihsiz",
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.white70,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Icon(
-                                          Icons.access_time,
-                                          size: 14,
-                                          color: Colors.white70,
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          task.time,
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.white70,
-                                          ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: gradient.last.withOpacity(0.35),
+                                          blurRadius: 12,
+                                          offset: const Offset(0, 6),
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          task.title,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        if (task.description.isNotEmpty) ...[
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            task.description,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              color: Colors.white70,
+                                            ),
+                                          ),
+                                        ],
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.calendar_today,
+                                              size: 14,
+                                              color: Colors.white70,
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              task.date != null
+                                                  ? "${task.date!.day}.${task.date!.month}.${task.date!.year}"
+                                                  : "Tarihsiz",
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.white70,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 12),
+                                            Icon(
+                                              Icons.access_time,
+                                              size: 14,
+                                              color: Colors.white70,
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              task.time,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.white70,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 52,
+                                    right: 8,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        final provider = context.read<TaskProvider>();
+                                        final index = provider.tasks.indexOf(task);
+                                        if (index != -1) {
+                                          provider.completeTask(index);
+                                        }
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.5),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: const Text(
+                                          "Tamamlandı",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 16,
+                                    right: 8,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        final provider = context.read<TaskProvider>();
+                                        final providerIndex = provider.tasks.indexOf(task);
+                                        if (providerIndex != -1) {
+                                          provider.deleteTask(providerIndex);
+                                        }
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.4),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: const Text(
+                                          "Görevi sil",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               );
                             },
                           );
@@ -426,6 +491,8 @@ class _HomeScreenState extends State<HomeScreen>
                                       children: [
                                         Text(
                                           task.title,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
@@ -436,6 +503,8 @@ class _HomeScreenState extends State<HomeScreen>
                                           const SizedBox(height: 6),
                                           Text(
                                             task.description,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                             style: const TextStyle(
                                               fontSize: 13,
                                               color: Colors.white70,
@@ -489,12 +558,40 @@ class _HomeScreenState extends State<HomeScreen>
                                         color: Colors.black.withOpacity(0.3),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
-                                      child: const Text(
-                                        "Zamanı geçti",
-                                        style: TextStyle(
+                                      child: Text(
+                                        task.isCompleted ? "Tamamlandı" : "Zamanı geçti",
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 11,
                                           fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 52,
+                                    right: 8,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        final provider = context.read<TaskProvider>();
+                                        final providerIndex = provider.tasks.indexOf(task);
+                                        if (providerIndex != -1) {
+                                          provider.deleteTask(providerIndex);
+                                        }
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.4),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: const Text(
+                                          "Görevi sil",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
                                       ),
                                     ),
