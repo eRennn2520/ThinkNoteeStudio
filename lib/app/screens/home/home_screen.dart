@@ -293,84 +293,177 @@ class _HomeScreenState extends State<HomeScreen>
 
                               return Stack(
                                 children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(bottom: 14),
-                                    padding: const EdgeInsets.all(18),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      gradient: LinearGradient(
-                                        colors: gradient,
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: gradient.last.withOpacity(0.35),
-                                          blurRadius: 12,
-                                          offset: const Offset(0, 6),
+                                  GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            backgroundColor: Colors.transparent,
+                                            insetPadding: const EdgeInsets.all(20),
+                                            content: Stack(
+                                              children: [
+                                                Container(
+                                                  padding: const EdgeInsets.all(20),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(20),
+                                                    gradient: LinearGradient(
+                                                      colors: gradient,
+                                                      begin: Alignment.topLeft,
+                                                      end: Alignment.bottomRight,
+                                                    ),
+                                                  ),
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          task.title,
+                                                          style: const TextStyle(
+                                                            fontSize: 20,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 12),
+                                                        if (task.description.isNotEmpty)
+                                                          Text(
+                                                            task.description,
+                                                            style: const TextStyle(
+                                                              fontSize: 15,
+                                                              color: Colors.white70,
+                                                            ),
+                                                          ),
+                                                        const SizedBox(height: 20),
+                                                        Row(
+                                                          children: [
+                                                            const Icon(Icons.calendar_today,
+                                                                color: Colors.white70, size: 16),
+                                                            const SizedBox(width: 8),
+                                                            Text(
+                                                              task.date != null
+                                                                  ? "${task.date!.day}.${task.date!.month}.${task.date!.year}"
+                                                                  : "Tarihsiz",
+                                                              style: const TextStyle(color: Colors.white70),
+                                                            ),
+                                                            const SizedBox(width: 16),
+                                                            const Icon(Icons.access_time,
+                                                                color: Colors.white70, size: 16),
+                                                            const SizedBox(width: 6),
+                                                            Text(
+                                                              task.time,
+                                                              style: const TextStyle(color: Colors.white70),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  top: 0,
+                                                  right: 0,
+                                                  child: GestureDetector(
+                                                    onTap: () => Navigator.of(context).pop(),
+                                                    child: Container(
+                                                      padding: const EdgeInsets.all(6),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.black.withOpacity(0.25),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.close,
+                                                        size: 18,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(bottom: 14),
+                                      padding: const EdgeInsets.all(18),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        gradient: LinearGradient(
+                                          colors: gradient,
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
                                         ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          task.title,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: gradient.last.withOpacity(0.35),
+                                            blurRadius: 12,
+                                            offset: const Offset(0, 6),
                                           ),
-                                        ),
-                                        if (task.description.isNotEmpty) ...[
-                                          const SizedBox(height: 6),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
                                           Text(
-                                            task.description,
+                                            task.title,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: const TextStyle(
-                                              fontSize: 13,
-                                              color: Colors.white70,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
                                             ),
                                           ),
-                                        ],
-                                        const SizedBox(height: 8),
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.calendar_today,
-                                              size: 14,
-                                              color: Colors.white70,
-                                            ),
-                                            const SizedBox(width: 6),
+                                          if (task.description.isNotEmpty) ...[
+                                            const SizedBox(height: 6),
                                             Text(
-                                              task.date != null
-                                                  ? "${task.date!.day}.${task.date!.month}.${task.date!.year}"
-                                                  : "Tarihsiz",
+                                              task.description,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.white70,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 12),
-                                            Icon(
-                                              Icons.access_time,
-                                              size: 14,
-                                              color: Colors.white70,
-                                            ),
-                                            const SizedBox(width: 6),
-                                            Text(
-                                              task.time,
-                                              style: const TextStyle(
-                                                fontSize: 12,
+                                                fontSize: 13,
                                                 color: Colors.white70,
                                               ),
                                             ),
                                           ],
-                                        ),
-                                      ],
+                                          const SizedBox(height: 8),
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.calendar_today,
+                                                size: 14,
+                                                color: Colors.white70,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Text(
+                                                task.date != null
+                                                    ? "${task.date!.day}.${task.date!.month}.${task.date!.year}"
+                                                    : "Tarihsiz",
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.white70,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Icon(
+                                                Icons.access_time,
+                                                size: 14,
+                                                color: Colors.white70,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Text(
+                                                task.time,
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.white70,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   Positioned(
@@ -465,85 +558,176 @@ class _HomeScreenState extends State<HomeScreen>
 
                               return Stack(
                                 children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(bottom: 14),
-                                    padding: const EdgeInsets.all(18),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      gradient: LinearGradient(
-                                        colors: gradient,
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
+                                  GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            backgroundColor: Colors.transparent,
+                                            insetPadding: const EdgeInsets.all(20),
+                                            content: Stack(
+                                              children: [
+                                                Container(
+                                                  padding: const EdgeInsets.all(20),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(20),
+                                                    gradient: LinearGradient(
+                                                      colors: gradient,
+                                                      begin: Alignment.topLeft,
+                                                      end: Alignment.bottomRight,
+                                                    ),
+                                                  ),
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          task.title,
+                                                          style: const TextStyle(
+                                                            fontSize: 20,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 12),
+                                                        if (task.description.isNotEmpty)
+                                                          Text(
+                                                            task.description,
+                                                            style: const TextStyle(
+                                                              fontSize: 15,
+                                                              color: Colors.white70,
+                                                            ),
+                                                          ),
+                                                        const SizedBox(height: 20),
+                                                        Row(
+                                                          children: [
+                                                            const Icon(Icons.calendar_today,
+                                                                color: Colors.white70, size: 16),
+                                                            const SizedBox(width: 8),
+                                                            Text(
+                                                              "${task.date.day}.${task.date.month}.${task.date.year}",
+                                                              style: const TextStyle(color: Colors.white70),
+                                                            ),
+                                                            const SizedBox(width: 16),
+                                                            const Icon(Icons.access_time,
+                                                                color: Colors.white70, size: 16),
+                                                            const SizedBox(width: 6),
+                                                            Text(
+                                                              task.time,
+                                                              style: const TextStyle(color: Colors.white70),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  top: 0,
+                                                  right: 0,
+                                                  child: GestureDetector(
+                                                    onTap: () => Navigator.of(context).pop(),
+                                                    child: Container(
+                                                      padding: const EdgeInsets.all(6),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.black.withOpacity(0.25),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.close,
+                                                        size: 18,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(bottom: 14),
+                                      padding: const EdgeInsets.all(18),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        gradient: LinearGradient(
+                                          colors: gradient,
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: gradient.last.withOpacity(
+                                              0.35,
+                                            ),
+                                            blurRadius: 12,
+                                            offset: const Offset(0, 6),
+                                          ),
+                                        ],
                                       ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: gradient.last.withOpacity(
-                                            0.35,
-                                          ),
-                                          blurRadius: 12,
-                                          offset: const Offset(0, 6),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          task.title,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                        if (task.description.isNotEmpty) ...[
-                                          const SizedBox(height: 6),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
                                           Text(
-                                            task.description,
+                                            task.title,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: const TextStyle(
-                                              fontSize: 13,
-                                              color: Colors.white70,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
                                             ),
                                           ),
-                                        ],
-                                        const SizedBox(height: 8),
-                                        Row(
-                                          children: [
-                                            const Icon(
-                                              Icons.calendar_today,
-                                              size: 14,
-                                              color: Colors.white70,
-                                            ),
-                                            const SizedBox(width: 6),
+                                          if (task.description.isNotEmpty) ...[
+                                            const SizedBox(height: 6),
                                             Text(
-                                              "${task.date.day}.${task.date.month}.${task.date.year}",
+                                              task.description,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.white70,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 12),
-                                            const Icon(
-                                              Icons.access_time,
-                                              size: 14,
-                                              color: Colors.white70,
-                                            ),
-                                            const SizedBox(width: 6),
-                                            Text(
-                                              task.time,
-                                              style: const TextStyle(
-                                                fontSize: 12,
+                                                fontSize: 13,
                                                 color: Colors.white70,
                                               ),
                                             ),
                                           ],
-                                        ),
-                                      ],
+                                          const SizedBox(height: 8),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.calendar_today,
+                                                size: 14,
+                                                color: Colors.white70,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Text(
+                                                "${task.date.day}.${task.date.month}.${task.date.year}",
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.white70,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 12),
+                                              const Icon(
+                                                Icons.access_time,
+                                                size: 14,
+                                                color: Colors.white70,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Text(
+                                                task.time,
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.white70,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   Positioned(
