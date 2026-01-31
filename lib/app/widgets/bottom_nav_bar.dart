@@ -12,14 +12,13 @@ class RollingNavBar extends StatefulWidget {
 class _RollingNavBarState extends State<RollingNavBar> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [HomeScreen(), NotesScreen(), ListScreen()];
+  final List<Widget> _pages = [HomeScreen(), NotesScreen()];
 
   final List<IconData> icons = [
     Icons.table_rows_rounded,
     Icons.notes,
-    Icons.list_alt,
   ];
-  final List<String> labels = ['Görevler', 'Notlar', 'Grup'];
+  final List<String> labels = ['Görevler', 'Notlar'];
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +51,6 @@ class _RollingNavBarState extends State<RollingNavBar> {
             items: [
               NavyBarItem(icon: icons[0], title: labels[0]),
               NavyBarItem(icon: icons[1], title: labels[1]),
-              NavyBarItem(icon: icons[2], title: labels[2]),
             ],
             onChanged: (index) {
               setState(() => _selectedIndex = index);
