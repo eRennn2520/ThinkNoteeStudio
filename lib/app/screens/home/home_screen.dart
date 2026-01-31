@@ -15,6 +15,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
+  bool _isSearching = false;
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
   // Helper: returns true if the task's date+time is before now.
   bool isTaskPast(task) {
     if (task.isCompleted) return true;
@@ -70,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -150,12 +154,21 @@ class _HomeScreenState extends State<HomeScreen>
                           // Arama butonu
                           Row(
                             children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.white,
-                                radius: 30,
-                                child: Icon(
-                                  EvaIcons.search,
-                                  color: Colors.black,
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _isSearching = !_isSearching;
+                                    _searchQuery = '';
+                                    _searchController.clear();
+                                  });
+                                },
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  radius: 30,
+                                  child: Icon(
+                                    _isSearching ? EvaIcons.close : EvaIcons.search,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 10),
@@ -169,7 +182,6 @@ class _HomeScreenState extends State<HomeScreen>
                                     ),
                                   );
                                 },
-
                                 child: CircleAvatar(
                                   radius: 30,
                                   backgroundColor: Colors.white,
@@ -190,6 +202,42 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
 
                 SizedBox(height: screenHeight * 0.02),
+
+                // Search TextField (minimal)
+                if (_isSearching)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+                    child: Container(
+                      height: 36,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.6),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: TextField(
+                        controller: _searchController,
+                        textAlignVertical: TextAlignVertical.center,
+                        onChanged: (value) {
+                          setState(() {
+                            _searchQuery = value.toLowerCase();
+                          });
+                        },
+                        style: const TextStyle(fontSize: 13),
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.search, size: 16, color: Colors.black45),
+                          prefixIconConstraints: BoxConstraints(
+                            minWidth: 32,
+                            minHeight: 50,
+                          ),
+                          hintText: "Ara",
+                          hintStyle: TextStyle(fontSize: 13),
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                    ),
+                  ),
 
                 // Başlık metni
                 Padding(
@@ -268,6 +316,9 @@ class _HomeScreenState extends State<HomeScreen>
                         builder: (context, taskProvider, _) {
                           final tasks = taskProvider.tasks
                               .where((t) => !isTaskPast(t))
+                              .where((t) =>
+                                  _searchQuery.isEmpty ||
+                                  t.title.toLowerCase().contains(_searchQuery))
                               .toList();
 
                           if (tasks.isEmpty) {
@@ -534,6 +585,9 @@ class _HomeScreenState extends State<HomeScreen>
                         builder: (context, taskProvider, _) {
                           final pastTasks = taskProvider.tasks
                               .where((t) => isTaskPast(t))
+                              .where((t) =>
+                                  _searchQuery.isEmpty ||
+                                  t.title.toLowerCase().contains(_searchQuery))
                               .toList();
 
                           if (pastTasks.isEmpty) {
