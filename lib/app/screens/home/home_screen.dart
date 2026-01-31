@@ -16,13 +16,28 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
+  String getGreeting() {
+    final hour = DateTime.now().hour;
+
+    if (hour >= 5 && hour < 12) {
+      return "Günaydın ☀️";
+    } else if (hour >= 12 && hour < 18) {
+      return "İyi günler 🌤️";
+    } else if (hour >= 18 && hour < 22) {
+      return "İyi akşamlar 🌙";
+    } else {
+      return "İyi geceler 🌌";
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(
-      length: 3,
+      length: 2,
       vsync: this,
-    ); // 3 tabs: All, In Progress, On Hold
+    ); // 2 tabs: Yapılacaklar, Geçmiş
   }
 
   @override
@@ -70,14 +85,39 @@ class _HomeScreenState extends State<HomeScreen>
                           // Profil fotoğrafı
                           Padding(
                             padding: const EdgeInsets.only(left: 8),
-                            child: CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              foregroundColor: Colors.transparent,
-
-                              radius: 28,
-                              backgroundImage: NetworkImage(
-                                "https://images.unsplash.com/photo-1633113214698-485cdb2f56fd?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                              ),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  foregroundColor: Colors.transparent,
+                                  radius: 28,
+                                  backgroundImage: NetworkImage(
+                                    "https://images.unsplash.com/photo-1633113214698-485cdb2f56fd?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      getGreeting(),
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    const Text(
+                                      "Sizin için buradayız ✨",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                           // Arama butonu
@@ -131,13 +171,14 @@ class _HomeScreenState extends State<HomeScreen>
                     alignment: Alignment.centerLeft,
                     child: FadeInUp(
                       child: Text(
-                        "Manage Your\nDaily Tasks",
-                        textAlign: TextAlign.left, // <--- BU DA ÖNEMLİ
+                        "Note Studio’na\nHoş geldin✨",
+                        textAlign: TextAlign.left,
                         style: TextStyle(
-                          fontSize: 36,
+                          fontSize: 30,
                           fontWeight: FontWeight.w400,
                           color: Colors.black,
-                          height: 1.4,
+                          height: 1.25,
+                          letterSpacing: -0.3,
                         ),
                       ),
                     ),
@@ -156,59 +197,29 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                     child: TabBar(
                       controller: _tabController,
-                      indicator: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        color: Colors
-                            .transparent, // indicator rengini transparent yapıyoruz, çünkü arka planı biz kendimiz ayarlayacağız
-                      ),
-                      labelColor: Colors
-                          .white, // labelColor ve unselectedLabelColor burada etki etmeyecek, çünkü Text widget'larında renkleri kendimiz veriyoruz
+                      indicator: BoxDecoration(color: Colors.transparent),
+                      labelColor: Colors.white,
                       unselectedLabelColor: Colors.black,
                       dividerColor: Colors.transparent,
-                      tabs: List.generate(3, (index) {
+                      tabs: List.generate(2, (index) {
                         bool isSelected = _tabController.index == index;
 
                         return Container(
-                          width: 100,
+                          height: 34,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
+                            borderRadius: BorderRadius.circular(18),
                             color: isSelected ? Colors.black : Colors.white,
                           ),
                           child: Tab(
-                            child: index == 0
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "All",
-                                        style: TextStyle(
-                                          color: isSelected
-                                              ? Colors.white
-                                              : Colors.black,
-                                        ),
-                                      ),
-                                      SizedBox(width: 5),
-                                      CircleAvatar(
-                                        radius: 10,
-                                        backgroundColor: Colors.grey,
-                                        child: Text(
-                                          "03",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Text(
-                                    index == 1 ? "In Progress" : "On Hold",
-                                    style: TextStyle(
-                                      color: isSelected
-                                          ? Colors.white
-                                          : Colors.black,
-                                    ),
-                                  ),
+                            child: Text(
+                              index == 0 ? "Görevler" : "Geçmiş",
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: isSelected ? Colors.white : Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
                         );
                       }),
@@ -226,11 +237,8 @@ class _HomeScreenState extends State<HomeScreen>
                   child: TabBarView(
                     controller: _tabController,
                     children: [
-                    AllScreen(),
-                    
-                   InProgressScreen(),
-                   
-                      Center(child: Text("On Hold Tasks")),
+                      AllScreen(), // Yapılacaklar
+                      Center(child: Text("Geçmiş")), // Geçmiş
                     ],
                   ),
                 ),
